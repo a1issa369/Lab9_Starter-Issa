@@ -231,15 +231,14 @@
     try {
       // Custom error: check for empty input or division by 0
       if (!firstNum || !secondNum || isNaN(firstNum) || isNaN(secondNum)) {
-        throw new Error("Both inputs must be valid numbers.");
+        throw new SyntaxError("Both inputs must be valid numbers.");
       }
       if (operator === '/' && Number(secondNum) === 0) {
-        throw new Error("Cannot divide by zero.");
+        throw new SyntaxError("Cannot divide by zero.");
       }
 
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     } catch (err) {
-      output.innerHTML = "Error: " + err.message;
       console.error(err);
     } finally {
       console.log("Calculation attempt finished.");
