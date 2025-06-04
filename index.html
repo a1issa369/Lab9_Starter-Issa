@@ -69,40 +69,182 @@
     </form>
 
     <section id="error-btns">
-      <button>Console Log</button>
-      <button>Console Error</button>
-      <button>Console Count</button>
-      <button>Console Warn</button>
-      <button>Console Assert</button>
-      <button>Console Clear</button>
-      <button>Console Dir</button>
-      <button>Console dirxml</button>
-      <button>Console Group Start</button>
-      <button>Console Group End</button>
-      <button>Console Table</button>
-      <button>Start Timer</button>
-      <button>End Timer</button>
-      <button>Console Trace</button>
-      <button>Trigger a Global Error</button>
+      <button id="log">Console Log</button>
+      <button id="error">Console Error</button>
+      <button id="count">Console Count</button>
+      <button id="warn">Console Warn</button>
+      <button id="assert">Console Assert</button>
+      <button id="clear">Console Clear</button>
+      <button id="dir">Console Dir</button>
+      <button id="dirxml">Console dirxml</button>
+      <button id="groupStart">Console Group Start</button>
+      <button id="groupEnd">Console Group End</button>
+      <button id="table">Console Table</button>
+      <button id="time">Start Timer</button>
+      <button id="timeEnd">End Timer</button>
+      <button id="trace">Console Trace</button>
+      <button id="globalError">Trigger a Global Error</button>
+      <button id="customError">Throw Custom Error</button>
     </section>
   </main>
 
   <script>
+    class CustomError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'CustomError';
+      }
+    }
     let form = document.querySelector('form');
-    form.addEventListener('submit', e => {
-      e.preventDefault();
-      let output = document.querySelector('output');
-      let firstNum = document.querySelector('#first-num').value;
-      let secondNum = document.querySelector('#second-num').value;
-      let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
-    });
+    
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    document.getElementById('customError').addEventListener('click', () => {
+      throw new CustomError('This is a custom error!');
+    });
+
+    document.getElementById('log').addEventListener('click', () => {
+      console.log('This is a console log message.');
+    });
+
+    // Console Error
+    document.getElementById('error').addEventListener('click', () => {
+      console.error('This is a console error!');
+    });
+
+    // Console Count
+    document.getElementById('count').addEventListener('click', () => {
+      console.count('Count button clicked');
+    });
+
+    // Console Warn
+    document.getElementById('warn').addEventListener('click', () => {
+      console.warn('This is a warning message.');
+    });
+
+    // Console Assert
+    document.getElementById('assert').addEventListener('click', () => {
+      console.assert(false, 'Assertion failed: false is not true');
+    });
+
+    // Console Clear
+    document.getElementById('clear').addEventListener('click', () => {
+      console.clear();
+    });
+
+    // Console Dir
+    document.getElementById('dir').addEventListener('click', () => {
+      const exampleObject = {
+        name: 'Example',
+        type: 'Object',
+        properties: {
+          prop1: 'value1',
+          prop2: 'value2'
+        }
+      };
+      console.dir(exampleObject);
+    });
+
+    // Console dirxml
+    document.getElementById('dirxml').addEventListener('click', () => {
+      console.dirxml(document.body);
+    });
+
+    // Console Group Start
+    document.getElementById('groupStart').addEventListener('click', () => {
+      console.group('My Group');
+      console.log('Inside the group');
+      console.log('Still inside the group');
+    });
+
+    // Console Group End
+    document.getElementById('groupEnd').addEventListener('click', () => {
+      console.groupEnd();
+    });
+
+    // Console Table
+    document.getElementById('table').addEventListener('click', () => {
+      const dataTable = [
+        { name: 'Alpha', num: 42 },
+        { name: 'Beta', num: 73 },
+        { name: 'Gamma', num: 58 },
+        { name: 'Delta', num: 19 }
+      ];
+      console.table(dataTable);
+    });
+
+    // Console Time
+    document.getElementById('time').addEventListener('click', () => {
+      console.time('Timer');
+    });
+
+    // Console TimeEnd
+    document.getElementById('timeEnd').addEventListener('click', () => {
+      console.timeEnd('Timer');
+    });
+
+    // Console Trace
+    document.getElementById('trace').addEventListener('click', () => {
+      function a() {
+        function b() {
+          function c() {
+            console.trace('Trace output');
+          }
+          c();
+        }
+        b();
+      }
+      a();
+    });
+
+  window.onerror = function(message, source, lineno, colno, error) {
+    console.error("Global Error Caught:");
+    console.log("Message:", message);
+    console.log("Source:", source);
+    console.log("Line:", lineno);
+    console.log("Column:", colno);
+    console.log("Error object:", error);
+    alert("A global error occurred! Check the console for details.");
+    return true; // prevents the default browser error handling
+  };
+
+    // Trigger a global error
+  document.getElementById('globalError').addEventListener('click', () => {
+  // This function doesn't exist, so it throws a ReferenceError
+    nonExistentFunction();
+  });
+
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+    let firstNum = document.getElementById('first-num').value;
+    let secondNum = document.getElementById('second-num').value;
+    let operator = document.getElementById('operator').value;
+    let output = document.querySelector('output');
+
+    try {
+      // Custom error: check for empty input or division by 0
+      if (!firstNum || !secondNum || isNaN(firstNum) || isNaN(secondNum)) {
+        throw new Error("Both inputs must be valid numbers.");
+      }
+      if (operator === '/' && Number(secondNum) === 0) {
+        throw new Error("Cannot divide by zero.");
+      }
+
+      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+    } catch (err) {
+      output.innerHTML = "Error: " + err.message;
+      console.error(err);
+    } finally {
+      console.log("Calculation attempt finished.");
+    }
+  });
+
+
+  
   </script>
 </body>
-
 </html>
